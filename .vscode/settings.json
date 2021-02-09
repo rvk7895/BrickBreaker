@@ -1,0 +1,6 @@
+{
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/home/rvk7895/anaconda3/envs/Brick_Breaker/bin/python",
+    "python.linting.flake8Enabled": true
+}
