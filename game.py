@@ -14,6 +14,8 @@ def set_bricks():
     x_co = 1
     y_co = 1
     Brick = None
+    bricks_array_row = 0
+    bricks_array_col = 0
 
     for char in level_string:
         # print(char)
@@ -23,18 +25,23 @@ def set_bricks():
         if(char=='3'): Brick = Brick3
         if(char=='4'): Brick = Brick4
 
+        if(Brick != None): 
+            obj = Brick(x_top = x_co, y_top = y_co)
+            obj.display(canvas = CANVAS, x = x_co, y = y_co)
+            BRICKS[bricks_array_row][bricks_array_col] = obj
+            bricks_array_col += 1
+        
         if(char == '\n'): 
             x_co = 1
             y_co += 3
+            bricks_array_col = 0
+            bricks_array_row += 1
 
-        if(Brick != None): 
-            obj = Brick()
-            obj.display(canvas = CANVAS, x = x_co, y = y_co)
-        
         x_co += cfg.BRICK_LENGTH
 
 # INITIALIZING THE CANVAS
 CANVAS = [[' ']*cfg.WIDTH for _ in range(cfg.HEIGHT)]
+BRICKS = [[None]*35 for _ in range(9)]
 
 # INITIALIZING THE FRAME IN CANVAS
 CANVAS[0][0] = '╔'
@@ -71,4 +78,7 @@ while True:
             print(CANVAS[i][j],end="")
         print()
     # print(level_string)
+    # for i in range(9):
+    #     for j in range(34):
+    #         print(BRICKS[i][j])
     sleep(0.1)
