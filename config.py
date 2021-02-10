@@ -1,8 +1,8 @@
 from colorama import Fore
 from pyfiglet import figlet_format
 
-LEFT_PADDING = ' '*13
-WIDTH = 187
+LEFT_PADDING = ' '*15
+WIDTH = 182
 HEIGHT = 45
 COLORS = [Fore.RED, 
         Fore.GREEN, 
@@ -11,6 +11,8 @@ COLORS = [Fore.RED,
         Fore.MAGENTA, 
         Fore.CYAN, 
         Fore.WHITE]
+
+BRICK_LENGTH = 5
 
 HEADER_TEXT = figlet_format("Brick Breaker")
 SPACES = ' '*77
