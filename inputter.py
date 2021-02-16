@@ -1,42 +1,45 @@
-"""Defining input class."""
-import sys
 import termios
+import sys
 import tty
 import signal
+from time import sleep
 
-class Get:
-    """Class to get input."""
-
-    def __call__(self):
-        """Defining __call__."""
+class Input:
+    def _get_key_raw(self):
         fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
+        self.old_config = termios.tcgetattr(fd)
         try:
             tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
+            ch = sys.stdin.buffer.raw.read(3)
         finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            termios.tcsetattr(fd, termios.TCSADRAIN, self.old_config)
         return ch
-
-
-class AlarmException(Exception):
-    """Handling alarm exception."""
-    pass
-
-
-def alarmHandler(signum, frame):
-    """Handling timeouts."""
-    raise AlarmException
-
-
-def input_to(getch, timeout=0.1):
-    """Taking input from user."""
-    signal.signal(signal.SIGALRM, alarmHandler)
-    signal.setitimer(signal.ITIMER_REAL, timeout)
-    try:
-        text = getch()
-        signal.alarm(0)
-        return text
-    except AlarmException:
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-        return None
+    
+    def _timeout_handler(self, signum, frame):
+        raise TimeoutError
+    
+    def get_parsed_input(self, timeout=0.1):
+        signal.signal(signal.SIGALRM, self._timeout_handler)
+        signal.setitimer(signal.ITIMER_REAL, timeout)
+        try:
+            ip = self._get_key_raw()
+            signal.alarm(0)
+            if ip == b'\x03':
+                text = 'quit'
+            elif ip == b'\x1b[D' or ip == b'a':
+                text = 'a'
+            elif ip == b'\x1b[C' or ip == b'd':
+                text = 'd'
+            elif ip == b' ':
+                text = 'space'
+            elif ip == b'\r':
+                text = 'enter'
+            elif ip == b'q':
+                text = 'q'
+            else:
+                text = 'none'
+            sleep(timeout)
+            return text
+        except TimeoutError:
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
+            return None
