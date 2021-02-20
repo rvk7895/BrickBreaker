@@ -1,14 +1,14 @@
-import numpy as np
 import colorama as cl
-from colorama import Fore, Back, Style
+from colorama import Fore
 import config as cfg
 import os
-from time import sleep
 from brick import Brick1, Brick2, Brick3, Brick4
 from paddle import Paddle
 from inputter import Input
 from ball import Ball
-
+from powerups import Paddle_Grow, Paddle_Shrink, Through_Ball, Fast_Ball
+from powerups import Grab_Ball
+import random
 
 cl.init()
 pd = Paddle()
@@ -38,8 +38,20 @@ def set_bricks():
         if(char == '4'):
             Brick = Brick4
 
-        if(Brick != None):
+        if not (Brick is None):
+            powerup = bool(random.getrandbits(1))
             obj = Brick(x_left=x_co, y=y_co)
+            # if powerup:
+            #     puobj = Paddle_Grow(obj)
+            #     POWERUPS.appned(puobj)
+            if char == '1':
+                puobj = Grab_Ball(obj, ball)
+                POWERUPS.append(puobj)
+
+            if char == '2':
+                puobj = Paddle_Shrink(obj, ball)
+                POWERUPS.append(puobj)
+
             BRICKS.append(obj)
 
         if(char == '\n'):
@@ -49,14 +61,75 @@ def set_bricks():
         x_co += cfg.BRICK_LENGTH
 
 
+def set_powerups():
+    for powerup in POWERUPS:
+        powerup.display(CANVAS)
+
+
 def print_bricks():
     for brick in BRICKS:
         brick.display(CANVAS)
 
 
+def check_powerup_bricks():
+    powerup_to_remove = None
+
+    for powerup in POWERUPS:
+        powerup.move(CANVAS)
+        picked_up = powerup.picked_up(pd)
+        if picked_up:
+            POWERUPS.remove(powerup)
+
+
+def check_ball_grab():
+    if ball.grab:
+        if ball.y == pd.y-1 and ball.x >= pd.x \
+                and ball.x < pd.x + pd.length:
+            attached = True
+
+
+
+def print_canvas(idx):
+    # PRINTING THE HEADER
+    idx = (idx + 1) % 7
+    print(cfg.COLORS[idx] + cfg.HEADER + Fore.RESET)
+
+    set_powerups()
+
+    CANVAS[0][0] = '╔'
+    CANVAS[0][cfg.WIDTH-1] = '╗'
+    CANVAS[cfg.HEIGHT-1][0] = '╚'
+    CANVAS[cfg.HEIGHT-1][cfg.WIDTH-1] = '╝'
+    for x in range(1, cfg.WIDTH-1):
+        CANVAS[0][x] = '═'
+        CANVAS[cfg.HEIGHT-1][x] = '═'
+    for x in range(1, cfg.HEIGHT-1):
+        CANVAS[x][0] = '║'
+        CANVAS[x][cfg.WIDTH-1] = '║'
+
+    # PRINTING THE CANVAS
+    for i in range(cfg.HEIGHT):
+        print(cfg.LEFT_PADDING, end="")
+        for j in range(cfg.WIDTH):
+            print(CANVAS[i][j], end="")
+        print()
+
+    if attached:
+        print('Press '+Fore.GREEN + 'spacebar' +
+              Fore.WHITE + ' to release ball' + Fore.RESET)
+
+    print(Fore.WHITE + 'Press ' + Fore.GREEN + 'a' + Fore.WHITE + ' and ' +
+          Fore.GREEN + 'd' + Fore.WHITE + ' to move left or right respectively'
+          + Fore.RESET)
+
+    print(Fore.WHITE + 'Press ' + Fore.RED + 'q' +
+          Fore.WHITE + ' to quit' + Fore.RESET)
+
+
 # INITIALIZING THE CANVAS
 CANVAS = [[' ']*cfg.WIDTH for _ in range(cfg.HEIGHT)]
 BRICKS = []
+POWERUPS = []
 
 # INITIALIZING THE FRAME IN CANVAS
 CANVAS[0][0] = '╔'
@@ -86,65 +159,32 @@ set_bricks()
 
 while key_press != 'q':
     os.system('clear')
-
     print_bricks()
     ball.ball_paddle_collision(pd)
     ball.ball_wall_collision()
-    # print(level_string)
-    ball.ball_brick_collision(bricks=BRICKS, canvas=CANVAS)
-    # print(level_string)
-    # input()
+    ball.ball_brick_collision(bricks=BRICKS, canvas=CANVAS, powerups=POWERUPS)
+    check_powerup_bricks()
+    check_ball_grab()
 
     pd.display(CANVAS)
     ball.display(CANVAS)
 
-    # PRINTING THE HEADER
-    print(cfg.COLORS[idx] + cfg.HEADER + Fore.RESET)
-    idx = (idx + 1) % 7
-
-    CANVAS[0][0] = '╔'
-    CANVAS[0][cfg.WIDTH-1] = '╗'
-    CANVAS[cfg.HEIGHT-1][0] = '╚'
-    CANVAS[cfg.HEIGHT-1][cfg.WIDTH-1] = '╝'
-    for x in range(1, cfg.WIDTH-1):
-        CANVAS[0][x] = '═'
-        CANVAS[cfg.HEIGHT-1][x] = '═'
-    for x in range(1, cfg.HEIGHT-1):
-        CANVAS[x][0] = '║'
-        CANVAS[x][cfg.WIDTH-1] = '║'
-
-    # PRINTING THE CANVAS
-    for i in range(cfg.HEIGHT):
-        print(cfg.LEFT_PADDING, end="")
-        for j in range(cfg.WIDTH):
-            print(CANVAS[i][j], end="")
-        print()
-
-    if attached:
-        print(Fore.WHITE + 'Press ' + Fore.GREEN + 'spacebar' +
-              Fore.WHITE + ' to release ball' + Fore.RESET)
-
-    print(Fore.WHITE + 'Press ' + Fore.GREEN + 'a' + Fore.WHITE + ' and ' +
-          Fore.GREEN + 'd' + Fore.WHITE + ' to move left or right respectively'
-          + Fore.RESET)
-
-    print(Fore.WHITE + 'Press ' + Fore.RED + 'q' +
-          Fore.WHITE + ' to quit' + Fore.RESET)
+    print_canvas(idx)
 
     # TAKING INPUT
     key_press = ip.get_parsed_input(timeout=0.07)
     if key_press == 'd':
-        pd.move_paddle(CANVAS, 3)
+        pd.move_paddle(CANVAS, 2)
         if attached:
-            ball.move(CANVAS, vel_x=3, attached=True)
+            ball.move(CANVAS, vel_x=2, attached=True)
     elif key_press == 'a':
-        pd.move_paddle(CANVAS, -3)
+        pd.move_paddle(CANVAS, -2)
         if attached:
-            ball.move(CANVAS, vel_x=-3, attached=True)
+            ball.move(CANVAS, vel_x=-2, attached=True)
     if not attached:
         ball.move(CANVAS, bricks=BRICKS)
     if key_press == 'space' and attached is True:
         attached = False
-        ball.move(CANVAS, vel_x=0, vel_y=-1, attached=True)
+        ball.move(CANVAS, vel_y=-1, attached=True)
 
 os.system("stty echo")

@@ -24,4 +24,4 @@ for idx in range(len(HEADER_TEXT)):
 
 PADDLE_Y = 25
 PADDLE_X = 45
-PADDLE_LENGTH = 8
+PADDLE_LENGTH = 9
