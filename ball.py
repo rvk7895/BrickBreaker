@@ -1,4 +1,4 @@
-from config import PADDLE_Y, PADDLE_X, PADDLE_LENGTH, WIDTH, BRICK_LENGTH
+from config import PADDLE_Y, PADDLE_X, PADDLE_LENGTH, WIDTH, BRICK_LENGTH, HEIGHT
 from brick import Brick1, Brick2, Brick3, Brick4
 
 
@@ -42,7 +42,7 @@ class Ball:
                      self.x + self.vel_x >= brick.x_left):
                 self.x = brick.x_left - 1 - self.vel_x
             if self.vel_x < 0 and\
-                (self.y <= brick.y + 1 and self.y    >= brick.y - 1) and \
+                (self.y <= brick.y + 1 and self.y >= brick.y - 1) and \
                     (self.x > brick.x_right and
                      self.x + self.vel_x <= brick.x_right):
                 self.x = brick.x_right + 1 - self.vel_x
@@ -59,9 +59,9 @@ class Ball:
             if self.x >= paddle_left_middle or self.x <= paddle_right_middle:
                 self.vel_x = 0
             if self.x < paddle_left_middle:
-                self.vel_x = int((self.x - paddle_middle - 1)/4) * self.multi
+                self.vel_x = int((self.x - paddle_middle - 1)/3) * self.multi
             if self.x > paddle_right_middle:
-                self.vel_x = int((self.x - paddle_middle + 1)/4) * self.multi
+                self.vel_x = int((self.x - paddle_middle + 1)/3) * self.multi
             self.vel_y = -self.vel_y
         if self.y == PADDLE_Y:
             if (self.vel_x > 0 and self.x == paddle.x - 1) or\
@@ -74,17 +74,19 @@ class Ball:
         if self.y == 1:
             self.vel_y = -self.vel_y
 
-    def ball_brick_collision(self, bricks=[], canvas=[], powerups=[]):
+    def ball_brick_collision(self, bricks=[], canvas=[], powerups=[], score=0):
         the_brick = None
         collision = False
         for idx, brick in enumerate(bricks):
-            if (self.y == brick.y + 1 or self.y == brick.y - 1) and \
+            if ((self.y == brick.y + 1 and self.vel_y < 0) or
+                (self.y == brick.y - 1 and self.vel_y > 0)) and \
                     (self.x >= brick.x_left and self.x <= brick.x_right):
                 if not self.through_ball:
                     self.vel_y = -self.vel_y
                 collision = True
 
-            if(self.x == brick.x_left - 1 or self.x == brick.x_right + 1) and \
+            if((self.x == brick.x_left - 1 and self.vel_x > 0)
+                or (self.x == brick.x_right + 1 and self.vel_x < 0)) and \
                     (self.y <= brick.y + 1 and self.y >= brick.y - 1):
                 if not self.through_ball:
                     self.vel_x = -self.vel_x
@@ -98,21 +100,25 @@ class Ball:
         if collision:
             bricks.remove(the_brick)
             if self.through_ball:
+                score += 10 * the_brick.strength
                 for i in range(BRICK_LENGTH):
                     canvas[the_brick.y][the_brick.x_left + i] = ' '
             else:
                 if the_brick.strength == 1:
+                    score += 10
                     for i in range(BRICK_LENGTH):
                         canvas[the_brick.y][the_brick.x_left + i] = ' '
                     for powerup in powerups:
                         if powerup.brick is the_brick:
                             powerup.activated = True
                 if the_brick.strength == 2:
+                    score += 10
                     obj = Brick1(the_brick.x_left, the_brick.y)
                     for powerup in powerups:
                         if powerup.brick is the_brick:
                             powerup.brick = obj
                 if the_brick.strength == 3:
+                    score += 10
                     obj = Brick2(the_brick.x_left, the_brick.y)
                     for powerup in powerups:
                         if powerup.brick is the_brick:
@@ -122,3 +128,11 @@ class Ball:
 
             if not (obj is None):
                 bricks.append(obj)
+        return score
+
+    def over(self, canvas):
+        if self.y == HEIGHT - 2:
+            canvas[self.y][self.x] = ' '
+            return True
+        return False
+

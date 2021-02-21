@@ -18,9 +18,9 @@ class Paddle:
         for i in range(self.length):
             canvas[self.y][self.x+i] = ' '
 
-        if dir == -2 and self.x <= 4 :
+        if dir == -4 and self.x <= 4 :
             self.x = 1
-        elif dir == 2 and self.x + self.length >= WIDTH - 5 :
+        elif dir == 4 and self.x + self.length >= WIDTH - 5 :
             self.x = WIDTH - 1 - self.length
         else:
             self.x += dir

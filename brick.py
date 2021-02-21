@@ -8,6 +8,7 @@ class Brick:
         self.y = y
         self.x_right = x_left + cfg.BRICK_LENGTH-1
 
+
 class Brick1(Brick):
     def __init__(self, x_left, y):
         super().__init__(x_left, y)
@@ -44,7 +45,7 @@ class Brick3(Brick):
 class Brick4(Brick):
     def __init__(self, x_left, y):
         super().__init__(x_left, y)
-        self.strength = 9999
+        self.strength = 4
         self.fore_color = Fore.BLACK
 
     def display(self, canvas):
