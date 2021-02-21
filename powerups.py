@@ -73,7 +73,7 @@ class Paddle_Shrink(Powerups):
                 (self.x >= paddle.x and self.x < paddle.x + paddle.length):
             for i in range(paddle.length):
                 canvas[paddle.y][paddle.x + i] = ' '
-                paddle.length -= 2
+            paddle.length -= 2
             self.activated = False
             return True
         return False
