@@ -1,8 +1,4 @@
 # Brick Breaker Game
-By :\
-Ritvik Aryan Kalra\
-2019115002
-
 ## Objective
 Objective of the game is to break all the breakable bricks. There are 4 types of bricks in the game:
 * Red which require 1 collision to break
@@ -28,8 +24,8 @@ Each powerup lasts for 10 seconds.
 
 ## Additional Functionalities
 User can create their own levels by editing the [Level_1.txt](Levels/Level_1.txt) file.
-* 0 reprents a space
-* 1 represetns a red brick
+* 0 represents a space
+* 1 represents a red brick
 * 2 represents a blue brick
 * 3 represents a yellow brick
 * 4 represents a black brick
