@@ -1,7 +1,7 @@
 {
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "python.pythonPath": "/home/watermelonpizza/anaconda3/envs/Brick_Breaker/bin/python",
+    "python.pythonPath": "/usr/bin/python3",
     "python.linting.flake8Enabled": false,
     "python.linting.pycodestyleEnabled": false,
     "python.linting.pylamaEnabled": true,
