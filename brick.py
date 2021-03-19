@@ -1,4 +1,4 @@
-from colorama import Fore, Back
+from colorama import Fore
 import config as cfg
 
 
@@ -6,7 +6,7 @@ class Brick:
     def __init__(self, x_left, y):
         self.x_left = x_left
         self.y = y
-        self.x_right = x_left + cfg.BRICK_LENGTH-1
+        self.x_right = x_left + cfg.BRICK_LENGTH - 1
 
 
 class Brick1(Brick):
@@ -17,7 +17,7 @@ class Brick1(Brick):
 
     def display(self, canvas):
         for i in range(cfg.BRICK_LENGTH):
-            canvas[self.y][self.x_left+i] = self.fore_color + '█' + Fore.RESET
+            canvas[self.y][self.x_left + i] = self.fore_color + "█" + Fore.RESET
 
 
 class Brick2(Brick):
@@ -28,7 +28,7 @@ class Brick2(Brick):
 
     def display(self, canvas):
         for i in range(cfg.BRICK_LENGTH):
-            canvas[self.y][self.x_left+i] = self.fore_color + '█' + Fore.RESET
+            canvas[self.y][self.x_left + i] = self.fore_color + "█" + Fore.RESET
 
 
 class Brick3(Brick):
@@ -39,7 +39,7 @@ class Brick3(Brick):
 
     def display(self, canvas):
         for i in range(cfg.BRICK_LENGTH):
-            canvas[self.y][self.x_left+i] = self.fore_color + '█' + Fore.RESET
+            canvas[self.y][self.x_left + i] = self.fore_color + "█" + Fore.RESET
 
 
 class Brick4(Brick):
@@ -50,4 +50,19 @@ class Brick4(Brick):
 
     def display(self, canvas):
         for i in range(cfg.BRICK_LENGTH):
-            canvas[self.y][self.x_left+i] = self.fore_color + '█' + Fore.RESET
+            canvas[self.y][self.x_left + i] = self.fore_color + "█" + Fore.RESET
+
+
+class Brick5(Brick):
+    def __init__(self, x_left, y):
+        super().__init__(x_left, y)
+        self.strength = 1
+        self.fore_color = Fore.RED
+
+    def display(self, canvas):
+        for i in range(cfg.BRICK_LENGTH):
+            canvas[self.y][self.x_left + i] = self.fore_color + "█" + Fore.RESET
+
+    def update_brick(self, idx):
+        self.strength = idx + 1
+        self.fore_color = cfg.COLORS[idx]

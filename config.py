@@ -5,12 +5,9 @@ LEFT_PADDING = ' '*50
 WIDTH = 107
 HEIGHT = 30
 COLORS = [Fore.RED,
-          Fore.GREEN,
-          Fore.YELLOW,
           Fore.BLUE,
-          Fore.MAGENTA,
-          Fore.CYAN,
-          Fore.WHITE]
+          Fore.YELLOW,
+          Fore.BLACK]
 
 BRICK_LENGTH = 5
 

@@ -31,3 +31,10 @@ User can create their own levels by editing the [Level_1.txt](Levels/Level_1.txt
 * 4 represents a black brick
 
 User can edit the width and height of the playing area by changing the values of `WIDTH` and `HEIGHT` in [`config.py`](config.py) respectively.
+
+## Launch Instructions
+```bash
+pipenv install 
+pipenv shell
+python3 game.py
+```

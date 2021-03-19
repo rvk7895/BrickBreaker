@@ -4,6 +4,7 @@ import tty
 import signal
 from time import sleep
 
+
 class Input:
     def _get_key_raw(self):
         fd = sys.stdin.fileno()
@@ -36,6 +37,8 @@ class Input:
                 text = 'enter'
             elif ip == b'q':
                 text = 'q'
+            elif ip == b'n':
+                text = 'n'
             else:
                 text = 'none'
             sleep(timeout)
